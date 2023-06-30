@@ -1,65 +1,115 @@
-import supervisely as sly
 import os
-from dataset_tools.convert import unpack_if_archive
-import src.settings as s
-from urllib.parse import unquote, urlparse
+
+import numpy as np
+import supervisely as sly
+from scipy.io import loadmat
 from supervisely.io.fs import get_file_name
-import shutil
+from tqdm import tqdm
+
+BATCH_SIZE = 500
 
 
-def download_dataset(teamfiles_dir: str) -> str:
-    """Use it for large datasets to convert them on the instance"""
-    api = sly.Api.from_env()
-    team_id = sly.env.team_id()
-    storage_dir = sly.app.get_data_dir()
+def create_meta(path_to_labels):
+    labels_map = {}
+    with open(path_to_labels, "r") as file:
+        for line in file:
+            line = line.strip()
+            if line:
+                key, value = line.split(": ")
+                labels_map[int(key)] = value
 
-    if isinstance(s.DOWNLOAD_ORIGINAL_URL, str):
-        parsed_url = urlparse(s.DOWNLOAD_ORIGINAL_URL)
-        file_name_with_ext = os.path.basename(parsed_url.path)
-        file_name_with_ext = unquote(file_name_with_ext)
+    obj_classes = []
+    for label_name in labels_map.values():
+        obj_classes.append(sly.ObjClass(label_name, sly.Bitmap))
 
-        sly.logger.info(f"Start unpacking archive '{file_name_with_ext}'...")
-        local_path = os.path.join(storage_dir, file_name_with_ext)
-        teamfiles_path = os.path.join(teamfiles_dir, file_name_with_ext)
-        api.file.download(team_id, teamfiles_path, local_path)
+    train_tag_meta = sly.TagMeta("train", sly.TagValueType.NONE)
+    test_tag_meta = sly.TagMeta("test", sly.TagValueType.NONE)
+    meta = sly.ProjectMeta(obj_classes=obj_classes, tag_metas=[train_tag_meta, test_tag_meta])
+    return meta, labels_map
 
-        dataset_path = unpack_if_archive(local_path)
 
-    if isinstance(s.DOWNLOAD_ORIGINAL_URL, dict):
-        for file_name_with_ext, url in s.DOWNLOAD_ORIGINAL_URL.items():
-            local_path = os.path.join(storage_dir, file_name_with_ext)
-            teamfiles_path = os.path.join(teamfiles_dir, file_name_with_ext)
+def create_label(meta, labels_map, image_data):
+    labels = []
+    unique_labels = np.unique(image_data)
+    for label_id in unique_labels:
+        lbl_mask = image_data == label_id
+        label = sly.Label(sly.Bitmap(lbl_mask), obj_class=meta.get_obj_class(labels_map[label_id]))
+        labels.append(label)
+    return labels
 
-            if not os.path.exists(get_file_name(local_path)):
-                api.file.download(team_id, teamfiles_path, local_path)
 
-                sly.logger.info(f"Start unpacking archive '{file_name_with_ext}'...")
-                unpack_if_archive(local_path)
+def create_traintest_sets(train_path, test_path):
+    traintest_map = {}
 
-            else:
-                sly.logger.info(
-                    f"Archive '{file_name_with_ext}' was already unpacked to '{os.path.join(storage_dir, get_file_name(file_name_with_ext))}'. Skipping..."
-                )
-
-        dataset_path = storage_dir
-    return dataset_path
-
+    with open(train_path, "r") as file:
+        train_names = [line.strip() for line in file.readlines()]
+        traintest_map["train"] = train_names
+    with open(test_path, "r") as file:
+        test_names = [line.strip() for line in file.readlines()]
+        traintest_map["test"] = test_names
+    return traintest_map
 
 
 def convert_and_upload_supervisely_project(
     api: sly.Api, workspace_id: int, project_name: str
 ) -> sly.ProjectInfo:
-    ### Function should read local dataset and upload it to Supervisely project, then return project info.###
-    raise NotImplementedError("The converter should be implemented manually.")
+    dataset_path = "../datasets-bot/datasets/cocostuff10k"
+    labels_file_path = os.path.join(dataset_path, "cocostuff-labels.txt")
+    train_file_path = os.path.join(dataset_path, "imageLists", "train.txt")
+    test_file_path = os.path.join(dataset_path, "imageLists", "test.txt")
 
-    # dataset_path = "/local/path/to/your/dataset" # general way
-    # dataset_path = download_dataset(teamfiles_dir) # for large datasets stored on instance
+    meta, labels_map = create_meta(labels_file_path)
+    traintest_map = create_traintest_sets(train_file_path, test_file_path)
 
-    # ... some code here ...
+    img_dir = os.path.join(dataset_path, "images")
+    ann_dir = os.path.join(dataset_path, "annotations")
 
-    # sly.logger.info('Deleting temporary app storage files...')
-    # shutil.rmtree(storage_dir)
+    project = api.project.create(workspace_id, project_name, change_name_if_conflict=True)
+    api.project.update_meta(project.id, meta.to_json())
+    for ds_name in traintest_map:
+        dataset = api.dataset.create(project.id, ds_name, change_name_if_conflict=True)
+        names = traintest_map[ds_name]
+        ann_paths = [os.path.join(ann_dir, f"{name}.mat") for name in names]
+        img_paths = [os.path.join(img_dir, f"{name}.jpg") for name in names]
 
-    # return project
+        tag = sly.Tag(meta.get_tag_meta(f"{ds_name}"))
+        with tqdm(total=len(img_paths), desc=f"Processing images in {dataset.name}") as pbar:
+            for img_paths_batch, ann_paths_batch in zip(
+                sly.batched(img_paths, batch_size=BATCH_SIZE),
+                sly.batched(ann_paths, batch_size=BATCH_SIZE),
+            ):
+                images_names = [get_file_name(img_path) for img_path in img_paths_batch]
+                anns = []
+                for ann_path in ann_paths_batch:
+                    data = loadmat(ann_path)
 
+                    image_size = data["S"].shape
+                    data_captions = data["captions"]
+                    captions = ""
+                    for caption in data_captions:
+                        captions += caption[0][0] + "\n"
 
+                    image_datas = [
+                        data["S"],
+                        # data["regionLabelsStuff"],
+                        # data["regionMapStuff"]
+                    ]
+                    labels = []
+                    for image_data in image_datas:
+                        data_labels = create_label(meta, labels_map, image_data)
+                        labels.extend(data_labels)
+
+                    ann = sly.Annotation(
+                        img_size=image_size,
+                        labels=labels,
+                        img_tags=[tag],
+                        # img_description=captions,
+                    )
+                    anns.append(ann)
+
+                img_infos = api.image.upload_paths(dataset.id, images_names, img_paths_batch)
+                img_ids = [im_info.id for im_info in img_infos]
+                api.annotation.upload_anns(img_ids, anns)
+                pbar.update(len(img_paths_batch))
+
+    return project
