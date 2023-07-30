@@ -1,30 +1,42 @@
 from typing import Dict, List, Optional, Union
 
-from dataset_tools.templates import AnnotationType, CVTask, Industry, License
+from dataset_tools.templates import (
+    AnnotationType,
+    Category,
+    CVTask,
+    Domain,
+    Industry,
+    License,
+    Research,
+)
 
 ##################################
 # * Before uploading to instance #
 ##################################
 PROJECT_NAME: str = "COCO Stuff 10k"
-PROJECT_NAME_FULL: str = "Common Objects in Context Stuff 10k"
+PROJECT_NAME_FULL: str = "COCO Stuff 10k: Common Objects in Context Stuff 10k"
 
 ##################################
 # * After uploading to instance ##
 ##################################
 LICENSE: License = License.CC_BY_4_0()
-INDUSTRIES: List[Industry] = [Industry.GeneralDomain()]
+APPLICATIONS: List[Union[Industry, Domain, Research]] = [Domain.General()]
+CATEGORY: Category = Category.General(benchmark=True)
+
 CV_TASKS: List[CVTask] = [
-    CVTask.ObjectDetection(),
     CVTask.InstanceSegmentation(),
     CVTask.SemanticSegmentation(),
+    CVTask.ObjectDetection(),
 ]
 ANNOTATION_TYPES: List[AnnotationType] = [
-    AnnotationType.ObjectDetection(),
     AnnotationType.InstanceSegmentation(),
-    AnnotationType.SemanticSegmentation(),
+    AnnotationType.ObjectDetection(),
 ]
 
-RELEASE_YEAR: int = 2017
+RELEASE_DATE: Optional[str] = None  # e.g. "YYYY-MM-DD"
+if RELEASE_DATE is None:
+    RELEASE_YEAR: int = 2018
+
 HOMEPAGE_URL: str = "https://github.com/nightrome/cocostuff10k"
 # e.g. "https://some.com/dataset/homepage"
 
@@ -38,10 +50,10 @@ GITHUB_URL: str = "https://github.com/dataset-ninja/cocostuff10k"
 ### * Optional after uploading ###
 ##################################
 DOWNLOAD_ORIGINAL_URL: Optional[Union[str, dict]] = {
-    "Images and annotations (.mat format)": "http://calvin.inf.ed.ac.uk/wp-content/uploads/data/cocostuffdataset/cocostuff-10k-v1.1.zip",
-    "Annotations in .json format": "http://calvin.inf.ed.ac.uk/wp-content/uploads/data/cocostuffdataset/cocostuff-10k-v1.1.json",
-    "Labels": "https://raw.githubusercontent.com/nightrome/cocostuff10k/master/dataset/cocostuff-labels.txt",
-    "Readme": "https://raw.githubusercontent.com/nightrome/cocostuff10k/master/README.md",
+    "Images and annotations (.mat format) [2.0 GB]": "http://calvin.inf.ed.ac.uk/wp-content/uploads/data/cocostuffdataset/cocostuff-10k-v1.1.zip",
+    "Annotations in .json format [62.3 GB]": "http://calvin.inf.ed.ac.uk/wp-content/uploads/data/cocostuffdataset/cocostuff-10k-v1.1.json",
+    "Labels [2.3 KB]": "https://raw.githubusercontent.com/nightrome/cocostuff10k/master/dataset/cocostuff-labels.txt",
+    "Readme [6.5 KB]": "https://raw.githubusercontent.com/nightrome/cocostuff10k/master/README.md",
 }
 # Optional link for downloading original dataset (e.g. "https://some.com/dataset/download")
 
@@ -50,8 +62,18 @@ CLASS2COLOR: Optional[Dict[str, List[str]]] = None
 
 PAPER: Optional[str] = "https://arxiv.org/abs/1612.03716"
 CITATION_URL: Optional[str] = None
-ORGANIZATION_NAME: Optional[Union[str, List[str]]] = None
-ORGANIZATION_URL: Optional[Union[str, List[str]]] = None
+AUTHORS: Optional[List[str]] = ["Holger Caesar", "Jasper Uijlings", "Vittorio Ferrari"]
+
+ORGANIZATION_NAME: Optional[Union[str, List[str]]] = [
+    "University of Edinburgh, UK",
+    "Google AI Perception",
+]
+ORGANIZATION_URL: Optional[Union[str, List[str]]] = [
+    "https://www.ed.ac.uk/",
+    "https://research.google/teams/perception/",
+]
+
+SLYTAGSPLIT: Optional[Dict[str, List[str]]] = None
 TAGS: List[str] = None
 
 ##################################
@@ -66,10 +88,15 @@ def check_names():
 
 
 def get_settings():
+    if RELEASE_DATE is not None:
+        global RELEASE_YEAR
+        RELEASE_YEAR = int(RELEASE_DATE.split("-")[0])
+
     settings = {
         "project_name": PROJECT_NAME,
         "license": LICENSE,
-        "industries": INDUSTRIES,
+        "applications": APPLICATIONS,
+        "category": CATEGORY,
         "cv_tasks": CV_TASKS,
         "annotation_types": ANNOTATION_TYPES,
         "release_year": RELEASE_YEAR,
@@ -81,13 +108,16 @@ def get_settings():
     if any([field is None for field in settings.values()]):
         raise ValueError("Please fill all fields in settings.py after uploading to instance.")
 
+    settings["release_date"] = RELEASE_DATE
     settings["project_name_full"] = PROJECT_NAME_FULL or PROJECT_NAME
     settings["download_original_url"] = DOWNLOAD_ORIGINAL_URL
     settings["class2color"] = CLASS2COLOR
     settings["paper"] = PAPER
     settings["citation_url"] = CITATION_URL
+    settings["authors"] = AUTHORS
     settings["organization_name"] = ORGANIZATION_NAME
     settings["organization_url"] = ORGANIZATION_URL
-    settings["tags"] = TAGS if TAGS is not None else []
+    settings["slytagsplit"] = SLYTAGSPLIT
+    settings["tags"] = TAGS
 
     return settings
