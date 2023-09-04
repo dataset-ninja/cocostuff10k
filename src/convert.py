@@ -53,7 +53,7 @@ def create_traintest_sets(train_path, test_path):
 def convert_and_upload_supervisely_project(
     api: sly.Api, workspace_id: int, project_name: str
 ) -> sly.ProjectInfo:
-    dataset_path = "../datasets-bot/datasets/cocostuff10k"
+    dataset_path = "APP_DATA/dataset"
     labels_file_path = os.path.join(dataset_path, "cocostuff-labels.txt")
     train_file_path = os.path.join(dataset_path, "imageLists", "train.txt")
     test_file_path = os.path.join(dataset_path, "imageLists", "test.txt")

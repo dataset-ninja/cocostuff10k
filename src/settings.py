@@ -13,8 +13,8 @@ from dataset_tools.templates import (
 ##################################
 # * Before uploading to instance #
 ##################################
-PROJECT_NAME: str = "COCO Stuff 10k"
-PROJECT_NAME_FULL: str = "COCO Stuff 10k: Common Objects in Context Stuff 10k"
+PROJECT_NAME: str = "COCO-Stuff 10k"
+PROJECT_NAME_FULL: str = "COCO-Stuff 10K dataset v1.1: Common Objects in Context Stuff 10k"
 HIDE_DATASET = True  # set False when 100% sure about repo quality
 
 ##################################
@@ -31,14 +31,14 @@ CV_TASKS: List[CVTask] = [
 ]
 ANNOTATION_TYPES: List[AnnotationType] = [AnnotationType.InstanceSegmentation()]
 
-RELEASE_DATE: Optional[str] = None  # e.g. "YYYY-MM-DD"
+RELEASE_DATE: Optional[str] = "2017-04-06"  # e.g. "YYYY-MM-DD"
 if RELEASE_DATE is None:
-    RELEASE_YEAR: int = 2018
+    RELEASE_YEAR: int = None
 
 HOMEPAGE_URL: str = "https://github.com/nightrome/cocostuff10k"
 # e.g. "https://some.com/dataset/homepage"
 
-PREVIEW_IMAGE_ID: int = 1386980
+PREVIEW_IMAGE_ID: int = 1387024
 # This should be filled AFTER uploading images to instance, just ID of any image.
 
 GITHUB_URL: str = "https://github.com/dataset-ninja/cocostuff10k"
@@ -58,7 +58,7 @@ DOWNLOAD_ORIGINAL_URL: Optional[Union[str, dict]] = {
 CLASS2COLOR: Optional[Dict[str, List[str]]] = None
 # If specific colors for classes are needed, fill this dict (e.g. {"class1": [255, 0, 0], "class2": [0, 255, 0]})
 
-PAPER: Optional[str] = "https://arxiv.org/abs/1612.03716"
+PAPER: Optional[str] = ["https://arxiv.org/abs/1612.03716", "https://arxiv.org/abs/1405.0312"]
 CITATION_URL: Optional[str] = None
 AUTHORS: Optional[List[str]] = ["Holger Caesar", "Jasper Uijlings", "Vittorio Ferrari"]
 
