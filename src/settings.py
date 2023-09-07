@@ -14,13 +14,13 @@ from dataset_tools.templates import (
 # * Before uploading to instance #
 ##################################
 PROJECT_NAME: str = "COCO-Stuff 10k"
-PROJECT_NAME_FULL: str = "COCO-Stuff 10K dataset v1.1: Common Objects in Context Stuff 10k"
+PROJECT_NAME_FULL: str = "COCO-Stuff 10K Dataset: Common Objects in Context Stuff 10k v1.1"
 HIDE_DATASET = True  # set False when 100% sure about repo quality
 
 ##################################
 # * After uploading to instance ##
 ##################################
-LICENSE: License = License.CC_BY_4_0()
+LICENSE: License = License.Custom(url="https://github.com/nightrome/cocostuff10k#licensing")
 APPLICATIONS: List[Union[Industry, Domain, Research]] = [Domain.General(is_used=False)]
 CATEGORY: Category = Category.General()
 
@@ -38,7 +38,7 @@ if RELEASE_DATE is None:
 HOMEPAGE_URL: str = "https://github.com/nightrome/cocostuff10k"
 # e.g. "https://some.com/dataset/homepage"
 
-PREVIEW_IMAGE_ID: int = 1387024
+PREVIEW_IMAGE_ID: int = 3294830
 # This should be filled AFTER uploading images to instance, just ID of any image.
 
 GITHUB_URL: str = "https://github.com/dataset-ninja/cocostuff10k"
