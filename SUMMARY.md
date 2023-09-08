@@ -2,7 +2,7 @@
 
 The dataset consists of 10000 images with 228313 labeled objects belonging to 183 different classes including *unlabeled*, *person*, *tree*, and other: *wall-other*, *sky-other*, *grass*, *building-other*, *clouds*, *road*, *pavement*, *chair*, *car*, *structural-other*, *dining table*, *fence*, *window-other*, *ground-other*, *cup*, *plant-other*, *bottle*, *bush*, *ceiling-other*, *furniture-other*, *light*, *bowl*, *table*, *dirt*, *door-stuff*, and 155 more.
 
-Images in the COCO-Stuff 10k dataset have pixel-level instance segmentation annotations. Due to the nature of the instance segmentation task, it can be automatically transformed into a semantic segmentation (only one mask for every class) or object detection (bounding boxes for every object) tasks. All images are labeled (i.e. with annotations). There are 2 splits in the dataset: *test* (1000 images) and *train* (9000 images). The dataset was released in 2017 by the University of Edinburgh, UK and Google AI Perception.
+Images in the COCO-Stuff 10k dataset have pixel-level instance segmentation annotations. Due to the nature of the instance segmentation task, it can be automatically transformed into a semantic segmentation (only one mask for every class) or object detection (bounding boxes for every object) tasks. All images are labeled (i.e. with annotations). There are 2 splits in the dataset: *test* (1000 images) and *train* (9000 images). The dataset was released in 2017 by the University of Edinburgh, United Kingdom and Google AI Perception.
 
 Here is a visualized example for 25 randomly selected sample classes:
 
