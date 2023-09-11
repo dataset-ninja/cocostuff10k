@@ -15,13 +15,13 @@ from dataset_tools.templates import (
 ##################################
 PROJECT_NAME: str = "COCO-Stuff 10k"
 PROJECT_NAME_FULL: str = "COCO-Stuff 10K Dataset: Common Objects in Context Stuff 10k v1.1"
-HIDE_DATASET = True  # set False when 100% sure about repo quality
+HIDE_DATASET = False  # set False when 100% sure about repo quality
 
 ##################################
 # * After uploading to instance ##
 ##################################
 LICENSE: License = License.Custom(url="https://github.com/nightrome/cocostuff10k#licensing")
-APPLICATIONS: List[Union[Industry, Domain, Research]] = [Domain.General(is_used=False)]
+APPLICATIONS: List[Union[Industry, Domain, Research]] = [Domain.General()]
 CATEGORY: Category = Category.General(benchmark=True)
 
 CV_TASKS: List[CVTask] = [
