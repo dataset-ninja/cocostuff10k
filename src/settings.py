@@ -63,7 +63,7 @@ CITATION_URL: Optional[str] = "https://arxiv.org/abs/1612.03716"
 AUTHORS: Optional[List[str]] = ["Holger Caesar", "Jasper Uijlings", "Vittorio Ferrari"]
 
 ORGANIZATION_NAME: Optional[Union[str, List[str]]] = [
-    "University of Edinburgh, UK",
+    "University of Edinburgh, United Kingdom",
     "Google AI Perception",
 ]
 ORGANIZATION_URL: Optional[Union[str, List[str]]] = [
