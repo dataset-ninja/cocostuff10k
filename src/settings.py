@@ -22,7 +22,7 @@ HIDE_DATASET = True  # set False when 100% sure about repo quality
 ##################################
 LICENSE: License = License.Custom(url="https://github.com/nightrome/cocostuff10k#licensing")
 APPLICATIONS: List[Union[Industry, Domain, Research]] = [Domain.General(is_used=False)]
-CATEGORY: Category = Category.General()
+CATEGORY: Category = Category.General(benchmark=True)
 
 CV_TASKS: List[CVTask] = [
     CVTask.InstanceSegmentation(),
@@ -38,7 +38,7 @@ if RELEASE_DATE is None:
 HOMEPAGE_URL: str = "https://github.com/nightrome/cocostuff10k"
 # e.g. "https://some.com/dataset/homepage"
 
-PREVIEW_IMAGE_ID: int = 3294830
+PREVIEW_IMAGE_ID: int = 3550978
 # This should be filled AFTER uploading images to instance, just ID of any image.
 
 GITHUB_URL: str = "https://github.com/dataset-ninja/cocostuff10k"
@@ -59,7 +59,7 @@ CLASS2COLOR: Optional[Dict[str, List[str]]] = None
 # If specific colors for classes are needed, fill this dict (e.g. {"class1": [255, 0, 0], "class2": [0, 255, 0]})
 
 PAPER: Optional[str] = ["https://arxiv.org/abs/1612.03716", "https://arxiv.org/abs/1405.0312"]
-CITATION_URL: Optional[str] = None
+CITATION_URL: Optional[str] = "https://arxiv.org/abs/1612.03716"
 AUTHORS: Optional[List[str]] = ["Holger Caesar", "Jasper Uijlings", "Vittorio Ferrari"]
 
 ORGANIZATION_NAME: Optional[Union[str, List[str]]] = [
@@ -71,7 +71,9 @@ ORGANIZATION_URL: Optional[Union[str, List[str]]] = [
     "https://research.google/teams/perception/",
 ]
 
-SLYTAGSPLIT: Optional[Dict[str, List[str]]] = None
+SLYTAGSPLIT: Optional[Dict[str, List[str]]] = {
+    "__PRETEXT__": "Additionally, images have ***caption*** tags, while objects contain ***category*** tags with information about labels hierarchy. Explore them in supervisely"
+}
 TAGS: List[str] = None
 
 ##################################
