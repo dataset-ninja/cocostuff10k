@@ -1,6 +1,6 @@
 Dataset **COCO-Stuff 10k** can be downloaded in [Supervisely format](https://developer.supervisely.com/api-references/supervisely-annotation-json-format):
 
- [Download](Set 'HIDE_DATASET=False' to generate download link)
+ [Download](https://assets.supervisely.com/supervisely-supervisely-assets-public/teams_storage/I/z/2H/6f385nX9XTjZrjphgOD1HA3jtSRQ9tIA66WaJ0IA5hVL7wTBCqY2jKb2ImFZjZwz0iISIMXzv6FQP39KgxsHHL9paPy91v1tHH3UfSqFOABViWhF1NcXqkn3dLN1.tar)
 
 As an alternative, it can be downloaded with *dataset-tools* package:
 ``` bash
