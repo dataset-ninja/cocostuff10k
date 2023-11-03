@@ -61,6 +61,7 @@ CLASS2COLOR: Optional[Dict[str, List[str]]] = None
 PAPER: Optional[str] = ["https://arxiv.org/abs/1612.03716", "https://arxiv.org/abs/1405.0312"]
 CITATION_URL: Optional[str] = "https://arxiv.org/abs/1612.03716"
 AUTHORS: Optional[List[str]] = ["Holger Caesar", "Jasper Uijlings", "Vittorio Ferrari"]
+AUTHORS_CONTACTS: Optional[List[str]] = ["https://sites.google.com/it-caesar.de/homepage/", "h.caesar@tudelft.nl", "http://homepages.inf.ed.ac.uk/juijling", "http://calvin.inf.ed.ac.uk/members/vittoferrari"]
 
 ORGANIZATION_NAME: Optional[Union[str, List[str]]] = [
     "University of Edinburgh, United Kingdom",
@@ -116,6 +117,7 @@ def get_settings():
     settings["paper"] = PAPER
     settings["citation_url"] = CITATION_URL
     settings["authors"] = AUTHORS
+    settings["authors_contacts"] = AUTHORS_CONTACTS
     settings["organization_name"] = ORGANIZATION_NAME
     settings["organization_url"] = ORGANIZATION_URL
     settings["slytagsplit"] = SLYTAGSPLIT
